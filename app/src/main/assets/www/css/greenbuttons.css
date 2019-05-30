@@ -1,0 +1,15 @@
+.button, input[type=button],  input[type=submit] {
+	padding: 5px 16px 1px;
+	border-radius: 4px;
+	font-weight: bold;
+	color: white;
+	text-align: center;
+	background-color: #20DF4C;
+	background: linear-gradient(to top, #0ECD3A, #55DE76, #55DE76, #03AE2A);/*80EE9A, 55DE76, -> 0ECD3A*/
+	min-height: 24px;
+	margin: 0 auto;
+	cursor: pointer;
+	border:none;
+	text-shadow: 1px 1px 0px black, 0 0 1px green;
+	/*color: #996e34;*/
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <resources>
+        <color name="downcountcolor">#65A3FF</color>
+        <color name="gold">#FFDD65</color>
+        <color name="gold_dark">#FFD02A</color>
+        <color name="white">#FFFFFF</color>
+    </resources>

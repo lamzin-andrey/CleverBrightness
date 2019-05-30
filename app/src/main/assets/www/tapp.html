@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!-- Это "псевдоприложение для браузера" Пусть всегда будет открыто в вкладке, а мы будем смотреть, как оно работает. -->
+<html>
+<head>
+	<title>Управление яркостью дисплея - JS тестирование</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="./css/main.css" type="text/css">
+	<link rel="stylesheet" href="./css/bmenu.css" type="text/css">
+	<link rel="stylesheet" href="./css/popupwin.css" type="text/css">
+	<script src="js/tdrom/javashim/androidshim.es6.js"></script>
+	<script src="js/tdrom/javashim/javashim.es6.js"></script>
+	<script src="js/jquery-1.11.0.min.js"></script>
+	<script src="js/tdrom/CleverBrightness.es6.js"></script>
+	<script src="js/tdrom/ServiceDM.es6.js"></script>
+	<script src="js/tdrom/DisplayManager.es6.js"></script>
+	<script src="js/tdrom/SimpleActivity.es6.js"></script>
+	<script src="js/tdrom/PHPInterface.es6.js"></script>
+	
+	
+	
+    <script src="js/tdrom/run.js"></script>
+	<script src="js/tdrom/tapp.js"></script>
+	
+	<!--tools-->
+	<script src="js/popupwin.min.js"></script>
+	
+	
+
+	<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, width=device-width, height=device-height,target-densitydpi=device-dpi, user-scalable=no" />
+</head>
+<body>
+	<div class="bMenu bg-black" id="bMenu">
+			<div class="bMenuStrip bg-white">&nbsp;</div>
+			<div class="bMenuStrip bg-black">&nbsp;</div>
+			<div class="bMenuStrip bg-white">&nbsp;</div>
+			<div class="bMenuStrip bg-black">&nbsp;</div>
+			<div class="bMenuStrip bg-white">&nbsp;</div>
+	</div>
+	<div class="main" id="help">
+		<div id="hLocalEditor" class="hide">
+			<div>
+				<div>
+					<label>
+						Введите имя элемента localStorage
+						<input type="text" id="iFilename" value="">
+						<input type="button" id="bLoad" value="Load">
+					</label>
+				</div>
+				<div>
+					<textarea id="iFilecontent" class="w99 noresize" rows="15"></textarea>
+					<p class="tright">
+						<input type="button" id="bSave" value="Save">
+					</p>
+				</div>
+			</div>
+		</div>
+		<div class="text-center center helptitle text-frame">
+			Проверка всего v 1<br>Эффект поворотника устранить!
+			<p>Начиная с 17 мая 2019 каждое утро в 10 00 ставим яркость 0, каждый вечер в 17 00 ставим яркость 150</p>
+			<p>Начиная с 24 мая 2019 надеемся увидеть автоматику </p>
+
+			<p>В list только '191520
+					192960
+					194400
+					'</p>
+			<div id="hTest">Ulala</div>
+		</div>
+		<input type="button" value="-" id="bMinus">
+		Яркость
+		<input type="button" value="+" id="bPlus">
+		<br>
+		<input type="button" value="Show Log" id="bShowLog">
+		
+		
+		<div style="max-height:250px;overflow-y: scroll;" id="hLog">
+
+		</div>
+	</div>
+
+	
+</body>
+</html>

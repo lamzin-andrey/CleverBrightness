@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Управление яркостью дисплея</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="./css/main.css" type="text/css">
+	<link rel="stylesheet" href="./js/bmenu/bmenu.css" type="text/css">
+	<link rel="stylesheet" href="./css/greenbuttons.css" type="text/css">
+	<script src="js/jquery-1.11.0.min.js"></script>
+	<script src="js/ru.js"></script>
+	<script src="js/en.js"></script>
+	<script src="js/l.js"></script>
+	<script src="js/bmenu/bmenu.js"></script>
+    <script src="js/jscontroller.js"></script>
+	
+
+	<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, width=device-width, height=device-height,target-densitydpi=device-dpi, user-scalable=no" />
+</head>
+<body>
+	<div class="bMenu bg-black hide" id="bMenu">
+			<div class="bMenuStrip bg-white">&nbsp;</div>
+			<div class="bMenuStrip bg-black">&nbsp;</div>
+			<div class="bMenuStrip bg-white">&nbsp;</div>
+			<div class="bMenuStrip bg-black">&nbsp;</div>
+			<div class="bMenuStrip bg-white">&nbsp;</div>
+	</div>
+	
+	<div class="main loadScr" id="hLoadScr">
+		<img class="clocklogo" src="./img/clock3d-8.png" >
+		<div class="frontz">
+			<div class="loadScrtext">
+				<div class="divit">
+					<div class="clever" id="hCleverText">Умная</div>
+					<div class="brg" id="hBrightnessText">Яркость</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="main hide bg0" id="help">
+		<img class="clocklogo" src="./img/clock3d-8.png" >
+		<div class="frontz">
+			<div id="hTest"></div>
+			<div class="whitebg">
+				<p class="firstParagraph" id="hDescLine1">Это приложение будет запоминать в какое время вы меняли яркость экрана своего устройства.</p>
+				<p id="hDescLine2">Через несколько дней использования оно начнет автоматически изменять яркость, ориентируясь на ваше поведение последние несколько дней.</p>
+				<p id="hDescLine3">Так, если вы несколько дней подряд уменьшали яркость примерно в 23:30, приложение не позже чем в 23:32 изменит яркость вашего устройства автоматически.</p>
+				<p id="hDescLine4" class="lastParagraph">При этом, если ваш смартфон был неактивен, смена яркости может произойти через некоторое время после активации.</p>
+			</div>
+			<div class="py-3">
+				<input type="button" value="Выход" id="bTestQuit">
+				<input type="button" value="Управление" id="bGotoControlScr">
+			</div>
+		</div>
+	</div>
+
+	<div class="main hide bg0" id="hControlScr">
+		<img class="clocklogo" src="./img/clock3d-8.png" >
+		<div class="frontz">
+			<div class="hControlScrTopSpacer">&nbsp;</div>
+		
+			<div class="whitebg">
+				<p  id="hMonitorStatePreview" class="small">Определяем состояние монитора яркости...</p>
+				<p  class=" hide" id="hMonitorState"><span id="hMonitorLabelTextCtrlScr">Монитор яркости</span> <span id="hMonitorStateValue">Включен</span></p>
+			</div>
+			<div class="py-3">
+					<input type="button" value="Остановить" id="bStopMonitor">
+				</div>
+			<div class="">
+				<input type="button" value="Выход" id="bQuitFromControlScr">
+			</div>
+		</div>
+	</div>
+
+
+	<div class="main hide bg0" id="hSettings">
+		<img class="clocklogo" src="./img/clock3d-8.png" >
+		<div class="frontz text-center">
+			<div class="hControlScrTopSpacer">&nbsp;</div>
+		
+			<div class="whitebg">
+				<p id="hSettingsTitle">Настройки</p>
+			</div>
+			<div class="whitebg">
+				<p>
+					<label><input type="radio" name="iLang" id="bLangen" value="en"> <span id="hLangValEn">English</span></label>
+				</p>
+				<p>
+					<label><input type="radio" name="iLang" id="bLangru" value="ru"> <span id="hLangValRu">Russian</span></label>
+				</p>
+			</div>
+				<input type="button" value="Выход" id="bQuitFromSettingsScr">
+			</div>
+		</div>
+	</div>
+
+	<div class="main hide bg0" id="hViewLogScr">
+		<img class="clocklogo" src="./img/clock3d-8.png" >
+		<div class="frontz">
+			<div class="hControlScrTopSpacer">&nbsp;</div>
+		
+			<div class="whitebg">
+				<div style="max-height:250px;overflow-y: scroll;" id="hLog"></div>
+			</div>
+			<div class="py-3 text-center">
+				<input type="button" value="Выход" id="bQuitFromLogScr">
+			</div>
+		</div>
+	</div>
+	
+	
+	<div id="hLocalEditor" class="main hide bg0">
+		<img class="clocklogo" src="./img/clock3d-8.png" >
+		<div class="frontz">
+			<div class="whitebg">
+				<p id="hNothingforyou"> You do not need it, do not put these checkboxes </p>
+				<div>
+					<label>
+						Enter key
+						<input type="text" id="iFilename" value="">
+						<input type="button" id="bLoad" value="Load">
+					</label>
+				</div>
+				<div>
+					<textarea id="iFilecontent" class="w99 noresize" rows="15"></textarea>
+					<p class="tright">
+						<input type="button" id="bSave" value="Save">
+						<input type="button" value="Выход" id="bQuitFromEditorScr">
+					</p>
+					<p class="tright">
+						<label><input type="checkbox" id="bOutDebugNotices"><span id="hOutDebugNotices">Show debug toast</span></label>
+					</p>
+					<p class="tright">
+						<label><input type="checkbox" id="bWriteDevlog"><span id="hWriteDevlog">Write devlog (it may be too big!)</span></label>
+					</p>
+					<p id="hUserAgent"></p>
+					<p id="hDevRes"></p>
+					<p>&nbsp;</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="menu hide" id="hMenuItems">
+		<div class="menuitem" id="hBack">Скрыть меню</div>
+		<div class="menuitem" id="hGoToControlScr">Управление</div>
+		<div class="menuitem" id="hViewlog">Журнал
+		</div>
+		<div class="menuitem hide" id="hMenuHelp">О программе
+		</div>
+		<div class="menuitem" id="hExit">Выход
+		</div>
+		<div class="menuitem" id="hMenuSettings">Настройки
+			</div>
+		<div class="menuitem" id="hDevscreen">Для разработчика
+		</div>
+	</div>
+	
+</body>
+</html>

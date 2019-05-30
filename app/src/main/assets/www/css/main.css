@@ -1,0 +1,208 @@
+body {
+	padding:0px!important;
+    margin:0px!important;
+    height:100%;
+}
+html {
+	padding:0px!important;
+    margin:0px!important;
+    height:100%;
+}
+.py-3 {
+	margin-top:1em;
+	margin-bottom:1em;
+}
+.helptitle {
+	font-size: 25px;
+    line-height: 40px;
+}
+#help img {
+	margin:10px 0px 60px 0px;
+}
+
+@media (max-width: 319px) {
+	.helptitle {
+		font-size: 16px;
+		line-height: 20px;
+	}
+	#help img {
+		margin:10px 0px 37px 0px;
+	}	
+	#hPanel {
+		font-size:10px;
+	}
+}
+
+#help {
+    text-align: center;
+    background-color: #355ed2;
+	color: #fff;
+	min-height:100%;
+    padding: 0px;
+    z-index: 25;
+    position: absolute;
+    left: 0px;
+	top: 0px;
+	width:100%;
+}
+
+
+/*html, .main {
+	height:100%;
+}*/
+body {
+	padding: 0px;
+	/*height:100%;*/
+	background-color:#F0F0F0;
+	font-family:ubuntu,geneva,arial;
+}
+
+form {
+	/*min-width: 600px;*/
+	margin:    0px auto;
+	text-align: center;
+	line-height:40px;
+	/*border:solid red 1px;*/
+	margin-bottom:15px;
+}
+
+input[type=search],input[type=submit] {
+	height:40px;
+	vertical-align:middle;
+}
+input[type=search] {
+	width:67%;
+	max-width:400px;
+	font-size:20px;
+}
+input[type=submit], input[type=button] {
+	height:38px;
+	background-color:#DACCB9;
+	border: 1px solid #DACCB9;
+	cursor:pointer;
+}
+.wordtext {
+	background-color:#FFF;
+	padding-bottom:0px;
+	padding:8px;
+}
+.hide {
+	display:none;
+}
+.main {
+	margin: 0px auto;
+	padding-bottom: 17px;
+}
+header {
+	text-align:center;
+}
+.src {
+	color: green;
+	font-style: italic;
+	font-size: 11px;
+	text-align: right;
+	margin-bottom:15px;
+	background-color: #FFF;
+	padding-bottom:10px;
+}
+#hPanel {
+	position:fixed;
+	left:0px;
+	text-align:center;
+	bottom:0px;
+	background-color:#000;
+	color:#fff;
+	width:100%;
+	border-top: 1px solid #c4d9e6;
+}
+.random {
+	max-width: 459px;
+    width: 80%;
+    margin-top: 10px;
+}
+.text-frame {
+	text-shadow:1px 1px 0px black, 0 0 1px black;
+}
+.tright {
+	text-align:right;
+}
+.text-center {
+	text-align:center;
+}
+.w99 {
+	width:99%;
+}
+.clocklogo {
+	margin:0 auto!important;
+	display:block;
+	padding-top:14%;
+	max-width:100%;
+}
+.frontz {
+	z-index: 26;
+	position: absolute;
+	top: 0;/*20%*/
+	left: 0;
+	width:100%;
+}
+.loadScr, .bg0 {
+	background-image: url("../img/bg-0.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    padding:0px!important;
+    margin:0px!important;
+    height:100%;
+}
+.divit {
+	position:relative;
+}
+.loadScrtext {
+	position:fixed;
+	bottom:10%;
+	width:100%;
+}
+.clever,.brg {
+	margin:0 auto;
+	font-family:Arial;
+	font-weight:bold;
+	font-size:2em;
+}
+.clever {
+	width:127px;
+}
+.brg {
+	width:67px;
+	color:white;
+}
+
+.small {
+	font-size:0.75em;
+}
+p {
+	line-height:20px;
+	padding-right: 4px;
+	padding-left: 4px
+}
+.firstParagraph {    text-indent: 40px;
+    line-height: 26px;
+}
+.lastParagraph {
+	margin:0px 0px 1px 0px;
+	padding:0;
+}
+.whitebg {
+	background-color: rgba(255, 255, 255, 0.75);
+	border-radius: 10px;
+	color:#121262;
+}
+.hControlScrTopSpacer {
+	padding-top:10%;/*13em*/
+}
+#hControlScr {
+	text-align:center;
+}
+#hMonitorStatePreview, #hMonitorState, #hSettingsTitle {
+	padding-bottom:1em;
+	padding-top:1em;
+}
+ 

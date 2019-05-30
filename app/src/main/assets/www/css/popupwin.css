@@ -1,0 +1,13 @@
+.adminpopup {
+    background-color: #d7d8f3;
+    /*background: linear-gradient(to bottom,#80a8d1,#478bd2);*/
+    border-radius: 9px 9px 0 0;
+    border: 1px solid #c3d1d7;
+    min-width: 250px;
+    z-index: 1001!important;
+    position: fixed;
+    left: 0;
+    top: 0;
+    color: black;
+    box-shadow: 3px 7px 5px 0 #a0bac7;
+}
