@@ -1,3 +1,5 @@
+https://play.google.com/store/apps/details?id=land.learn.hw19
+
 Automatic brightness adjustment. For smartphones that do not set the display brightness depending on the lighting.
 The application works in the background and remembers at what time you changed the display brightness and to what value.
 Analyzing three days of observations, it automatically sets the brightness of the screen of your smartphone at the same time
