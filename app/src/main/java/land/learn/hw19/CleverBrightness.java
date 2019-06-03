@@ -152,24 +152,44 @@ public class CleverBrightness {
 		if (this.PHP == null) {
 			this.PHP = new PHPInterface(this._ctx);
 		}
+		DisplayManager._lastErr = "";
 		this.b = DisplayManager.getDisplayBrightness(this._ctx.getContentResolver());
-		//Если не существует, записать текущую и выйти
-		if (this.b == -1 || !this.PHP.file_exists(CleverBrightness.filePrefix + "prev")) {
+		
+		//Если не существует файл со значением предыдущей яркости, записать текущую и выйти (но только если она корректна!)
+		if ( !this.PHP.file_exists(CleverBrightness.filePrefix + "prev") && this.b != -1 ) {
+			_devlog("On no exists file 'prev' create it with value '" + this.PHP.strval(this.b) + "'");
 			this.PHP.file_put_contents(CleverBrightness.filePrefix + "prev", this.PHP.strval(this.b));
-			return;
 		}
 		//Если изменилась
 		this.prevBrightness = this.PHP.file_get_contents(CleverBrightness.filePrefix + "prev");
-		long tt = -1;
-		try {
-			tt = PHP.intval(this.prevBrightness);
-		} catch (Exception e) {
-			_toast("CBri PHP.intval(this.prevBrightness): " + e.getMessage());
-		}
+		long longPrevBrg;
+		longPrevBrg = PHP.intval(this.prevBrightness);
 		int iPrevBrg = -1;
-		Long oLong = new Long(tt);
+		Long oLong = new Long(longPrevBrg);
 		iPrevBrg = oLong.intValue();
 		if (iPrevBrg != this.b) {
+			
+			//ИНогда не удаётся получить системную яркость, в этом случае надо запустить приложение чтобы получить контекст
+			if (this.b < 10) {
+				String addinfo = "";
+				if (this.b == -1) {
+					addinfo = " And real this.b == -1";
+					//let
+					Intent
+					intent = new Intent(this._ctx.getBaseContext(), SimpleActivity.class);
+					
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					//Передадим нашему приложению, что это не есть действие установки яркости, это действие запуска
+					intent.putExtra("needChangeBrigntness", -1);
+					// (это действие запуска сервиса)
+					intent.putExtra("itStartAction", 1);
+					//И запустим его
+					this._ctx.getApplication().startActivity(intent);
+				}
+				_devlog("Got brg < 10, it '" + this.PHP.strval(this.b) + "' " + addinfo + "\nDManager lastErr:\n" + DisplayManager._lastErr);
+				return;
+			}
+			
 			try {
 				_toast( "CBri writeDetectedChange(" + PHP.strval(iPrevBrg) + ", " + PHP.strval(this.b) + ")" );
 				this.writeDetectedChange(iPrevBrg, this.b);
@@ -182,6 +202,13 @@ public class CleverBrightness {
 			} catch (Exception e) {
 				_toast( "CBri Ex on call setActualBrightness: " + e.getMessage() );
 			}
+		}
+		if (this.b == 1 || this.PHP.strval(this.b) == "1") {
+			String dbgs = " And b real == 1";
+			if (this.b != 1) {
+				dbgs = " But b != 1!";
+			}
+			_devlog("Save'prev' with value '" + this.PHP.strval(this.b) + "'" + dbgs);
 		}
 		this.PHP.file_put_contents(CleverBrightness.filePrefix + "prev", PHP.strval(this.b));
 		this.PHP.file_put_contents(CleverBrightness.filePrefix + "lastmodtime", PHP.strval(this.PHP.time()));
@@ -224,15 +251,11 @@ public class CleverBrightness {
 			} catch ( Exception e) {
 				_toast("CBri setActualBrightness try call parseResult got error : " + e.getMessage());
 			}
-			
-			
-			
 			//в зависимости от того, должны мы уменьшить или увеличить яркость находит минимум или максимум
 			//используя поля aExtr*, nExtr*, bExtr*
 			currB = this._getExtremum();
 			//if (dbg) console.log('gotCurrB:', currB);
 			dStr += "gotCurrB: " + PHP.strval(currB) + "\n";
-			
 		}
 		
 		//на основании вызовов parseResult и _getExtremum содержит true если "голосов за изменение" было больше чем "за стабильность"
@@ -245,7 +268,7 @@ public class CleverBrightness {
 			dStr += "No will apply\n";
 		}
 		dStr += "===================\n\n\n";
-		_devlog(dStr);
+		//_devlog(dStr);
 	}
 	/**
 	 * @description Непосредственно установка яркости
@@ -262,6 +285,8 @@ public class CleverBrightness {
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		//Передадим нашему приложению, какую яркость следует установить
 		intent.putExtra("needChangeBrigntness", this.b);
+		//Уточнив, что это не действие запуска для предотвращения ошибки "-1" (itStartAction == -1 - значит это не действие перезапуска сервиса с новым контекстом)
+		intent.putExtra("itStartAction", -1);
 		this._writeHumanLog();
 		//И запустим его
 		this._ctx.getApplication().startActivity(intent);
@@ -288,7 +313,7 @@ public class CleverBrightness {
 			n = this._nExtrIterator - 1;
 		if (n == -1) {
 			n = 0;
-			_devlog("CBri _getExtremum -1 - it Here...");
+			//_devlog("CBri _getExtremum -1 - it Here...");
 		}
 		//прежде всего необходимо понять необходимость изменений
 		//Предположим, что голосовавших за перемены больше, и желающих увеличивать и уменьшать не поровну - мы изменим это значение если это не так
@@ -325,7 +350,7 @@ public class CleverBrightness {
 		sYear = sYear.substring(2);
 		sYear = PHP.strval( PHP.intval(sYear) );
 		if (this._aExtrNeedChanges[n] == 1 && this._aExtrAbsMin[n] == 0 && PHP.strval(this._aExtrAbsYear[n]) == sYear) {
-			_devlog("Abs min found!");
+			//_devlog("Abs min found!");
 			//Сохраняем абсолютный минмум без учета голоса
 			if (this._aExtrDiffs[n] < this._nExtrAbsMin) {
 				this._bAbsMinExists = true;
@@ -333,16 +358,16 @@ public class CleverBrightness {
 				this._nExtrAbsValue = this._aExtrValues[n];
 			}
 		} else {
-			_devlog( "Abs min not found!" );
+			//_devlog( "Abs min not found!" );
 			if (this._aExtrNeedChanges[n] != 1) {
-				_devlog( "First part do not complete! this._aExtrNeedChanges[n] == " + PHP.strval(this._aExtrNeedChanges[n]) + ", ex 1!" );
+				//_devlog( "First part do not complete! this._aExtrNeedChanges[n] == " + PHP.strval(this._aExtrNeedChanges[n]) + ", ex 1!" );
 			}
 			if (this._aExtrAbsMin[n] == 0) {
-				_devlog( "Second part do not complete! this._aExtrAbsMin[n] ==  " + PHP.strval(this._aExtrAbsMin[n] ) + ", ex 0!" );
+				//_devlog( "Second part do not complete! this._aExtrAbsMin[n] ==  " + PHP.strval(this._aExtrAbsMin[n] ) + ", ex 0!" );
 			}
 			if (PHP.strval(this._aExtrAbsYear[n]) != sYear) {
-				_devlog( "Third part do not complete!  PHP.strval(this._aExtrAbsYear[n]) ==  '" + PHP.strval(this._aExtrAbsYear[n]) + "', ex 19!" );
-				_devlog("sYear ==  '" + sYear + "', ex 19!");
+				//_devlog( "Third part do not complete!  PHP.strval(this._aExtrAbsYear[n]) ==  '" + PHP.strval(this._aExtrAbsYear[n]) + "', ex 19!" );
+				//_devlog("sYear ==  '" + sYear + "', ex 19!");
 			}
 			
 		}
@@ -385,22 +410,22 @@ public class CleverBrightness {
 		
 		//если сегодня уже меняли, голоса не надо учитывать. Да и менять скорее всего не надо
 		if (this._bAbsMinExists) {
-			_devlog("_bAbsMinExists is TRUE!");
+			//_devlog("_bAbsMinExists is TRUE!");
 			//раз должны были увеличить, сравниваем с повышающим
 			if (this._nExtrDirection > 0) {
-				_devlog("this._nExtrDirection > 0");
+				//_devlog("this._nExtrDirection > 0");
 				//наш сегодняшний момент ближе, чем найденный экстремум в другом файле
 				if (this._nExtrAbsMin <= this._nExtrDiffForPlus) {
-					_devlog("this._nExtrAbsMin <= this._nExtrDiffForPlus WTF??");
+					//_devlog("this._nExtrAbsMin <= this._nExtrDiffForPlus WTF??");
 					this._bNeedChangeBrightness = false;
 					return this._nExtrAbsValue;
 				}
 			} else {
-				_devlog("this._nExtrDirection <= 0");
+				//_devlog("this._nExtrDirection <= 0");
 				//раз должны были уменьшить, сравниваем с понижающим
 				//наш сегодняшний момент ближе, чем найденный экстремум в другом файле
 				if (this._nExtrAbsMin <= this._nExtrDiffForMinus) {
-					_devlog( "this._nExtrAbsMin <= this._nExtrDiffForMinus WTF??");
+					//_devlog( "this._nExtrAbsMin <= this._nExtrDiffForMinus WTF??");
 					this._bNeedChangeBrightness = false;
 					return this._nExtrAbsValue;
 				}
@@ -413,7 +438,7 @@ public class CleverBrightness {
 			this._nExtrChangetime = this._nChangetimeForPlus;
 			//увеличиваем, надо вернуть ближайший к текущему моменту из "повышающих"
 			return this._nExtrBrForPlus;
-		} 
+		}
 		//уменьшаем, надо вернуть ближайший к текущему моменту из "понижающих"
 		
 		this._nExtrChangetime = this._nExtrChangetimeForMinus;
@@ -557,7 +582,7 @@ X	 * @return int[] массив целых чисел [
 		this._aExtrAbsYear[sz] = aExtremumInfo[6];
 		this._nExtrIterator++;
 		
-		_devlog( "Save _nExtrIterator = " + PHP.strval(this._nExtrIterator) );
+		//_devlog( "Save _nExtrIterator = " + PHP.strval(this._nExtrIterator) );
 	}
 	/**
 	 * @description Сбрасывает переменные связанные с нахождением миинимума или максимума экстремум
@@ -584,7 +609,7 @@ X	 * @return int[] массив целых чисел [
 		this._nExtrAbsValue = 0;
 		this._nExtrAbsMin = 1000000;
 		this._bAbsMinExists = false;
-		_devlog("Clear _nExtrIterator = " + PHP.strval(this._nExtrIterator) + "!");
+		//_devlog("Clear _nExtrIterator = " + PHP.strval(this._nExtrIterator) + "!");
 	}
 	/**
 	 * @description Получить список имен файлов с журналами изменений, ближайших к текущей дате. 

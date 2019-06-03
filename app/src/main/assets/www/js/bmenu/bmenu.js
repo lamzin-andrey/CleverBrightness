@@ -32,8 +32,8 @@ function antMenuHide(bMenu, hMenuItems) {
 		hMenuItems.hide();
 		hMenuItems.addClass('hide');
 		bMenu.show();
-		if (window.bNeedQuitOnMenuHidden && window.Droid) {
-			Droid.quit();
+		if (window.bNeedQuitOnMenuHidden && window.Qt) {
+			Qt.quit();
 		}
 	});
 }

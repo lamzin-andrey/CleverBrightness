@@ -18,6 +18,7 @@ import android.os.PowerManager;
 import android.webkit.WebView;
 import android.widget.Toast;
 import android.content.res.Configuration;
+import android.content.pm.PackageInfo;
 import java.util.Locale;
 
 //for launch service
@@ -65,7 +66,7 @@ public class SimpleActivity extends Activity{
 		mWebView.loadUrl("file:///android_asset/www/index.html"); 
 		//mWebView.loadUrl("javascript://alert(101);"); 
 		AndroidUlib.APP = this;
-		mWebView.addJavascriptInterface (this, "Droid");
+		mWebView.addJavascriptInterface (this, "Qt");
 		
 		_mPhp = new PHPInterface(getApplicationContext());
 		mWebView.addJavascriptInterface (_mPhp, "PHP");
@@ -84,10 +85,21 @@ public class SimpleActivity extends Activity{
 		};
 		Intent it = this.getIntent();
 		int brigntness = it.getIntExtra("needChangeBrigntness", -1);
-		if (brigntness != -1) {
-			DisplayManager.setWindowBrightness(brigntness, getWindow());
-			Message msg = handler.obtainMessage(DELAYED_MESSAGE);
-			handler.sendMessageDelayed(msg, 1000);
+		int startAction = it.getIntExtra("itStartAction", -1);
+		if (brigntness != -1 || startAction != -1) {
+			if (startAction != -1) {
+				//start service
+				Message msg = handler.obtainMessage(DELAYED_MESSAGE);
+				handler.sendMessageDelayed(msg, 1000);
+				stopDMService(true);
+				startDMService(true);
+			} else if (brigntness != -1) {
+				//set new brightness value
+				DisplayManager.setWindowBrightness(brigntness, getWindow());
+				Message msg = handler.obtainMessage(DELAYED_MESSAGE);
+				handler.sendMessageDelayed(msg, 1000);
+			}
+			
 		} else {
 			DisplayManager.setWindowBrightness(brigntness, getWindow());
 			Message msg = handler.obtainMessage(HIDE_LDR_MSG);
@@ -102,11 +114,23 @@ public class SimpleActivity extends Activity{
 		//Intent intent = new Intent(getBaseContext(), SimpleActivity.class);
 		SimpleActivity.this.finish();
 	}
-	
 	public boolean startDMService()
+	{
+		return startDMService(false);
+	}
+	/**
+	 * @param boolean mute=false когда true не выводится toast
+	*/
+	public boolean startDMService(boolean mute)
     {
 		try {
-			startService(new Intent(this, ServiceDM.class));
+			Intent intent = new Intent(this, ServiceDM.class);
+			if (mute) {
+				intent.putExtra("noShowToast", 1);
+			} else {
+				intent.putExtra("noShowToast", 0);
+			}
+			startService(intent);
 		} catch(Exception e) {
 			this._lastErr = e.getMessage();
 			return false;
@@ -120,10 +144,33 @@ public class SimpleActivity extends Activity{
 		return cnf.locale.getLanguage();
 	}
 	
+	public String getVersion() {
+		try {
+			PackageInfo info = getApplicationContext().getPackageManager().getPackageInfo( getPackageName(), 0 );
+			return "{\"versionName\":\"" + info.versionName + "\",\"versionCode\":\"" + info.versionCode + "\"}";
+		} catch (Exception exc) {
+			_lastErr = exc.getMessage();
+		}
+		return "{\"versionName\":\"Fail get version\", \"versionCode\":\"Fail get version\"}";
+	}
+	
 	public boolean stopDMService()
     {
+		return stopDMService(false);
+	}
+	/**
+	 * @param boolean mute=false когда true не выводится toast
+	*/
+	public boolean stopDMService(boolean mute)
+    {
 		try {
-			stopService(new Intent(this, ServiceDM.class));
+			Intent intent = new Intent(this, ServiceDM.class);
+			if (mute) {
+				intent.putExtra("noShowToast", 1);
+			} else {
+				intent.putExtra("noShowToast", 0);
+			}
+			stopService(intent);
 		} catch(Exception e) {
 			this._lastErr = e.getMessage();
 			return false;

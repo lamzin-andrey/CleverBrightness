@@ -147,6 +147,7 @@ public class PHPInterface {
 			 || s.charAt(i) == '7'
 			 || s.charAt(i) == '8'
 			 || s.charAt(i) == '9'
+			 || s.charAt(i) == '-'
 			) {
 				q += s.charAt(i);
 			}
@@ -154,7 +155,8 @@ public class PHPInterface {
 		if (q.length() == 0) {
 			return 0;
 		}
-		return Integer.parseInt(q);
+		//return Integer.parseInt(q);
+		return Long.parseLong(q);
     }
     public boolean in_array(String need,  String[] a){
         int i;

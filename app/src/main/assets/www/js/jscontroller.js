@@ -68,9 +68,9 @@ function init() {
     
     setTimeout(hideLoadScrn, 10*1000);//change me to 10*1000!
     try {
-		var b = Droid.getDisplayBrightness();
+		var b = Qt.getDisplayBrightness();
 		//hTest.text(b);
-		var s = Droid.getLastErr();
+		var s = Qt.getLastErr();
 		if (s) {
 			//hTest[0].innerHTML += '<br>Java err: ' + s;
 		}
@@ -78,7 +78,7 @@ function init() {
 		//set lang
 		var lang = PHP.file_get_contents('selectedlang').trim();
 		if (lang != 'ru' && lang != 'en') {
-			lang = Droid.getSystemLocale();
+			lang = Qt.getSystemLocale();
 		}
 		if (lang != 'ru' && lang != 'en') {
 			lang = 'en';
@@ -100,6 +100,21 @@ function init() {
 		//set debug info
 		$('#hUserAgent').text( navigator.userAgent );
 		$('#hDevRes').text( screen.width + 'x' + screen.height );
+		
+		var hVersInfo = $('#hVersionInfo'), sVersionData, oVersionInfo;
+		Qt.setLastErr('');
+		sVersionData = Qt.getVersion();
+		try {
+			oVersionInfo = JSON.parse(sVersionData);
+			sVersionData = 'versionName = ' + oVersionInfo.versionName + ', versionCode = ' + oVersionInfo.versionCode;
+		} catch(e) {
+			sVersionData = "Unable parse version JSON";
+		}
+		hVersInfo.text(sVersionData);
+		var sLatsErr = Qt.getLastErr();
+		if (sLatsErr) {
+			hVersInfo.text( hVersInfo.text() + '<br>' + sLatsErr );
+		}
 		
 	} catch (err) {
 		//hTest[0].innerHTML += '<br>JS err: ' + err;
@@ -141,21 +156,21 @@ function onClickMenu() {
  * @description Принyдительно останавливает или запускает сервис
 */
 function onClickStopSrv(){ 
-	Droid.setLastErr('');
+	Qt.setLastErr('');
 	var b;
 	if (_getMonitoringState()) {
-		b = Droid.stopDMService();
+		b = Qt.stopDMService();
 		setTimeout( function() {
 			PHP.file_put_contents("lastmodtime", PHP.time() - 120);
 		}, 2*1000 );
 		
 	} else {
-		b = Droid.startDMService();
+		b = Qt.startDMService();
 		
 	}
 	
-	if (Droid.getLastErr()) {
-		//hTest[0].innerHTML += 'bool = "' + b + '", lastErr = ' + Droid.getLastErr();
+	if (Qt.getLastErr()) {
+		//hTest[0].innerHTML += 'bool = "' + b + '", lastErr = ' + Qt.getLastErr();
 	}
 }
 /**
@@ -439,9 +454,9 @@ function _setQtShim() {
 	}
 }
 function onClickQuitElement() {
-	Droid.setLastErr('');
-	Droid.quit();
-	if (Droid.getLastErr()) {
-		//$('#hTest').html('lastErr = ' + Droid.getLastErr());
+	Qt.setLastErr('');
+	Qt.quit();
+	if (Qt.getLastErr()) {
+		//$('#hTest').html('lastErr = ' + Qt.getLastErr());
 	}
 }

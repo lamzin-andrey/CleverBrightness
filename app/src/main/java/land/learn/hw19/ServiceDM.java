@@ -52,7 +52,8 @@ public class ServiceDM extends Service {
 		return null;
 	}
 	@Override
-	public void onCreate() {
+	public void onCreate()
+	{
 		Toast.makeText(this, "Intelligente Helligkeit erstellt", Toast.LENGTH_SHORT).show();
 	}
 	@Override
@@ -64,7 +65,10 @@ public class ServiceDM extends Service {
 	 * @description Запускает ежеминутный таймер при запуске 
 	*/
 	public void onStart(Intent intent, int nStart) {
-		Toast.makeText(this, "Intelligente Helligkeit starten", Toast.LENGTH_SHORT).show();
+		int doMute = intent.getIntExtra("noShowToast", 0);
+		if (doMute == 0) {
+			Toast.makeText(this, "Intelligente Helligkeit starten", Toast.LENGTH_SHORT).show();
+		}
 		_instance = this;
 		runTimer();
 	}
