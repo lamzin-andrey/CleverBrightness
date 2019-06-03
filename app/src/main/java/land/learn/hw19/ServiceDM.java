@@ -65,9 +65,15 @@ public class ServiceDM extends Service {
 	 * @description Запускает ежеминутный таймер при запуске 
 	*/
 	public void onStart(Intent intent, int nStart) {
-		int doMute = intent.getIntExtra("noShowToast", 0);
-		if (doMute == 0) {
-			Toast.makeText(this, "Intelligente Helligkeit starten", Toast.LENGTH_SHORT).show();
+		//На android 4 Samsung Galaxy Trend пришлось обернуть, иначе приложение могло в фоне аварийно завершиться.
+		//Удивительно, что на Fly Stratus android 6 и Samsung Galaxy Y android 2 норм
+		try {
+			int doMute = intent.getIntExtra("noShowToast", 0);
+			if (doMute == 0) {
+				Toast.makeText(this, "Intelligente Helligkeit starten", Toast.LENGTH_SHORT).show();
+			}
+		} catch (Exception e) {
+			Toast.makeText(this, "Intelligente Helligkeit starten\n" + e.getMessage(), Toast.LENGTH_SHORT).show();
 		}
 		_instance = this;
 		runTimer();

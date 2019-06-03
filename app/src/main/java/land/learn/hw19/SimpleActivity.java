@@ -89,11 +89,13 @@ public class SimpleActivity extends Activity{
 		if (brigntness != -1 || startAction != -1) {
 			if (startAction != -1) {
 				//start service
+				_devlog(_mPhp.date("Y-m-d H:i:s") + " start for restart service");
 				Message msg = handler.obtainMessage(DELAYED_MESSAGE);
 				handler.sendMessageDelayed(msg, 1000);
 				stopDMService(true);
 				startDMService(true);
 			} else if (brigntness != -1) {
+				_devlog(_mPhp.date("Y-m-d H:i:s") + " start for change brg");
 				//set new brightness value
 				DisplayManager.setWindowBrightness(brigntness, getWindow());
 				Message msg = handler.obtainMessage(DELAYED_MESSAGE);
@@ -101,6 +103,7 @@ public class SimpleActivity extends Activity{
 			}
 			
 		} else {
+			_devlog(_mPhp.date("Y-m-d H:i:s") + " start from user");
 			DisplayManager.setWindowBrightness(brigntness, getWindow());
 			Message msg = handler.obtainMessage(HIDE_LDR_MSG);
 			handler.sendMessageDelayed(msg, 5*1000);
@@ -302,5 +305,13 @@ public class SimpleActivity extends Activity{
     public void setLastErr(String s) {
 		this._lastErr = s;
 	}
-	
+	/**
+	 * @description Записывает сообщения в файл devlog при включенной настройке
+	**/
+	private  void _devlog(String s) {
+		long dbgDevlogOn = _mPhp.intval( _mPhp.file_get_contents("dbgDevlogOn") );
+		if (dbgDevlogOn == 1) {
+			_mPhp.file_put_contents("devlog", s + "\n", PHPInterface.FILE_APPEND);
+		}
+	}
 }

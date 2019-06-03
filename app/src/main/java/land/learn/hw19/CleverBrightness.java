@@ -156,38 +156,51 @@ public class CleverBrightness {
 		this.b = DisplayManager.getDisplayBrightness(this._ctx.getContentResolver());
 		
 		//Если не существует файл со значением предыдущей яркости, записать текущую и выйти (но только если она корректна!)
-		if ( !this.PHP.file_exists(CleverBrightness.filePrefix + "prev") && this.b != -1 ) {
-			_devlog("On no exists file 'prev' create it with value '" + this.PHP.strval(this.b) + "'");
-			this.PHP.file_put_contents(CleverBrightness.filePrefix + "prev", this.PHP.strval(this.b));
+		if ( !this.PHP.file_exists(CleverBrightness.filePrefix + "prev") ) {
+			if (this.b != -1)  {
+				_devlog("On no exists file 'prev' create it with value '" + this.PHP.strval(this.b) + "'");
+				this.PHP.file_put_contents(CleverBrightness.filePrefix + "prev", this.PHP.strval(this.b));
+			} else {
+				_devlog("On no exists file 'prev' create it with value '255' because we do not detect sys brg!");
+				this.PHP.file_put_contents(CleverBrightness.filePrefix + "prev", "255");
+			}
 		}
 		//Если изменилась
-		this.prevBrightness = this.PHP.file_get_contents(CleverBrightness.filePrefix + "prev");
 		long longPrevBrg;
-		longPrevBrg = PHP.intval(this.prevBrightness);
 		int iPrevBrg = -1;
-		Long oLong = new Long(longPrevBrg);
-		iPrevBrg = oLong.intValue();
+		try {
+			this.prevBrightness = this.PHP.file_get_contents(CleverBrightness.filePrefix + "prev");
+			longPrevBrg = PHP.intval(this.prevBrightness);
+			Long oLong = new Long(longPrevBrg);
+			iPrevBrg = oLong.intValue();
+		} catch (Exception e) {
+			_devlog("Error on read iPrevBrg '" + e.getMessage() + "'");
+		}
 		if (iPrevBrg != this.b) {
 			
 			//ИНогда не удаётся получить системную яркость, в этом случае надо запустить приложение чтобы получить контекст
-			if (this.b < 10) {
-				String addinfo = "";
-				if (this.b == -1) {
-					addinfo = " And real this.b == -1";
-					//let
-					Intent
-					intent = new Intent(this._ctx.getBaseContext(), SimpleActivity.class);
-					
-					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					//Передадим нашему приложению, что это не есть действие установки яркости, это действие запуска
-					intent.putExtra("needChangeBrigntness", -1);
-					// (это действие запуска сервиса)
-					intent.putExtra("itStartAction", 1);
-					//И запустим его
-					this._ctx.getApplication().startActivity(intent);
+			try {
+				if (this.b < 10) {
+					String addinfo = "";
+					if (this.b == -1) {
+						addinfo = " And real this.b == -1";
+						//let
+						Intent
+						intent = new Intent(this._ctx.getBaseContext(), SimpleActivity.class);
+						
+						intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						//Передадим нашему приложению, что это не есть действие установки яркости, это действие запуска
+						intent.putExtra("needChangeBrigntness", -1);
+						// (это действие запуска сервиса)
+						intent.putExtra("itStartAction", 1);
+						//И запустим его
+						this._ctx.getApplication().startActivity(intent);
+					}
+					_devlog("Got brg < 10, it '" + this.PHP.strval(this.b) + "' " + addinfo + "\nDManager lastErr:\n" + DisplayManager._lastErr);
+					return;
 				}
-				_devlog("Got brg < 10, it '" + this.PHP.strval(this.b) + "' " + addinfo + "\nDManager lastErr:\n" + DisplayManager._lastErr);
-				return;
+			} catch(Exception e) {
+				_devlog("Error on try exit on invalid sys brg '" + e.getMessage() + "'");
 			}
 			
 			try {
